@@ -1,0 +1,119 @@
+.switchContainer {
+  width: 50px;
+  height: 25px;
+  border: 1px solid #dbb4b4;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  background: #dbb4b4;
+  cursor: pointer;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  z-index: 1;
+}
+.switch {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #e76e6e;
+  border-radius: 50%;
+  position: relative;
+  left: 4px;
+  animation: moveForward 200ms ease-in-out forwards;
+  background: #e76e6e;
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 1px;
+  width: 10px;
+  height: 4px;
+  border-left: 2px solid #b8cf76;
+  border-bottom: 2px solid #b8cf76;
+  transform: rotate(-35deg);
+  animation: tick 300ms ease-in-out forwards;
+  transform-origin: left top;
+}
+@keyframes tick {
+  0% {
+    width: 0px;
+    height: 0px;
+  }
+  50% {
+    height: 4px;
+    width: 0px;
+  }
+  100% {
+    width: 10px;
+  }
+}
+.switchOff {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #4c553388;
+  border-radius: 50%;
+  position: relative;
+  left: 4px;
+  animation: moveBackward 200ms ease-in-out forwards;
+  background: #4c553388;
+}
+.switchOff::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 2px;
+  width: 10px;
+  height: 2px;
+  background: #b8cf76;
+  transform: rotate(-50deg);
+  animation: cross 300ms ease-in-out forwards;
+  transform-origin: left top;
+}
+.switchOff::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  width: 10px;
+  height: 2px;
+  background: #b8cf76;
+  transform: rotate(50deg);
+  animation: cross 300ms ease-in-out forwards;
+  transform-origin: left top;
+}
+@keyframes cross {
+  0% {
+    width: 0px;
+  }
+  50% {
+    width: 0px;
+  }
+  100% {
+    width: 10px;
+  }
+}
+@keyframes moveForward {
+  0% {
+    transform: translate(0);
+  }
+  100% {
+    transform: translate(25px);
+  }
+}
+@keyframes moveBackward {
+  0% {
+    transform: translate(25px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+.dark {
+    font-size: 9px;
+    margin: 0px 5px;
+    position: absolute;
+    left: 15px;
+    transition: 300ms left;
+    color: #2c2424;
+}
