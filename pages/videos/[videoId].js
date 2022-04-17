@@ -108,15 +108,15 @@ function VideoPage() {
     });
   }, []);
   const refs = [];
-  for (let i = 0; i < videoList.length; i++) {
-    refs[i] = useRef(null);
-  }
+  // This needs to be fixed
+  // for (let i = 0; i < videoList.length; i++) {
+  //   refs[i] = useRef(null);
+  // }
 
   return (
     <>
       {videoList.map((video, idx) => (
         <div
-          ref={refs[idx]}
           key={video.id}
           className={`${styles.videosContainer} ${styles.videoCard} ${
             "cardCount" + idx
