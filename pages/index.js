@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import cx from "classnames";
 import Switch from "../Components/switch";
+import Slider from "../Components/slider";
+
 import styles from "./status.module.css";
 import Link from "next/link";
 import modeCtx from "../Context/modeCtx";
@@ -158,8 +160,11 @@ function Status() {
       }, 1000);
     }
   }
+  const [seen, setSeen] = useState(false);
+
   useEffect(() => {
-    if (currSts < statusArr.length) {
+    if (currSts < statusArr.length && (seen || localStorage.getItem("seen"))) {
+      if(!localStorage.getItem('seen')) localStorage.setItem('seen', seen);
       const tmp1 = document.getElementsByClassName("status_status__D1DlT")[
         currSts
       ];
@@ -181,7 +186,7 @@ function Status() {
         }, 1000);
       }
     }
-  }, [currSts]);
+  }, [currSts, seen]);
   const someFunct = () => {
     if (timerId) {
       const pauseTime = new Date() - start;
@@ -204,17 +209,19 @@ function Status() {
   var start;
   useEffect(() => {
     start = new Date();
-    document
-      .getElementById("statusContainer")
-      .addEventListener("touchstart", someFunct);
-    window.addEventListener("keyup", someFunct);
+    if (seen || localStorage.getItem("seen")) {
+      document
+        .getElementById("statusContainer")
+        .addEventListener("touchstart", someFunct);
+      window.addEventListener("keyup", someFunct);
+    }
     return () => {
       document
         .getElementById("statusContainer")
         .removeEventListener("touchstart", someFunct);
       window.removeEventListener("keyup", someFunct);
     };
-  }, [timerId]);
+  }, [timerId, seen]);
 
   return (
     <modeCtx.Provider value={{ darkmode, setMode }}>
@@ -255,9 +262,7 @@ function Status() {
             {statusArr[currSts].otherDetails || <span></span>}
           </>
           {/* ))} */}
-          <div style={{ position: "absolute", bottom: "10px" }}>
-            If on mobile, tap to pause else press space to pause!
-          </div>
+          {!seen && (typeof window !== 'undefined' && !localStorage.getItem('seen')) ? <Slider type="notif" onclick={() => setSeen(!seen)} /> : <></> }
         </div>
       </div>
     </modeCtx.Provider>

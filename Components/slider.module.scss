@@ -1,0 +1,23 @@
+$notification: #ca5e5e;
+.Container {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  padding: 20px 5px;
+}
+.background-notif {
+  background: $notification;
+}
+.text {
+  margin-bottom: 10px;
+}
+.okBtn {
+  float: right;
+  margin-right: 10px;
+}
+.btn{
+  padding: 5px 10px;
+  border: 0px;
+  border-radius: 5px;
+  background: #c9b3b3;
+}
