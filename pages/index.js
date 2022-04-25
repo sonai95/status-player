@@ -235,11 +235,11 @@ function Status() {
       setTimer(undefined);
       document.getElementById("counters").children[
         currSts
-      ]?.children[0]?.style?.animationPlayState = "paused";
+      ].children[0].style.animationPlayState = "paused";
     } else {
       document.getElementById("counters").children[
         currSts
-      ]?.children[0]?.style?.animationPlayState = "running";
+      ].children[0].style.animationPlayState = "running";
       checkLoadedFunc();
     }
   };
