@@ -6,6 +6,7 @@ import Slider from "../Components/slider";
 import styles from "./status.module.css";
 import Link from "next/link";
 import modeCtx from "../Context/modeCtx";
+import Config from "../Config/config.json";
 
 function Status() {
   const [darkmode, setMode] = useState(true);
@@ -145,7 +146,6 @@ function Status() {
   const [currSts, setStsCnt] = useState(0);
   const [timerId, setTimer] = useState(null);
   function checkLoadedFunc() {
-    console.log("xXXXXXXXXx")
     var image = document.getElementById("statusContainer").children[0];
     var isLoaded = image.complete && image.naturalHeight !== 0;
     if (!statusArr[currSts].item || isLoaded) {
@@ -166,8 +166,7 @@ function Status() {
   const [seen, setSeen] = useState(false);
 
   useEffect(() => {
-    console.log("AAAAAAAAAAAAAAAA", currSts)
-    if (currSts >=0 && currSts < statusArr.length && (seen || localStorage.getItem("seen"))) {
+    if (currSts >=0 && currSts < statusArr.length && (seen || localStorage.getItem("seen")) && (localStorage.getItem("version") === Config.version)) {
       if (!localStorage.getItem("seen")) localStorage.setItem("seen", seen);
       const tmp1 = document.getElementsByClassName("status_status__D1DlT")[
         currSts
@@ -204,7 +203,6 @@ function Status() {
     }
   }
   const someFunct = (e) => {
-    console.log(e)
     if ((e.code === "ArrowLeft" || (e?.touches && e?.touches[0]?.clientX < 100)) && currSts > 0) {
       for (let i = currSts - 1; i <= currSts; i++) {
         const x = document.getElementsByClassName("status_status__D1DlT")[i];
@@ -259,55 +257,63 @@ function Status() {
       window.removeEventListener("keyup", someFunct);
     };
   }, [timerId, seen]);
+  const setVersion = () => {
+    localStorage.setItem("version", Config.version);
+    setSeen(!seen);
+  }
 
   return (
     <modeCtx.Provider value={{ darkmode, setMode }}>
-      {currSts>=0 && <div
-        className={cx(styles.root, { [styles.bright]: !darkmode })}
-        id="container"
-      >
-        <Switch />
-        <div className={styles.counts} id="counters">
-          {statusArr.map((sts, index) => (
-            <div
-              className={cx(styles.status, { [styles.dark]: !darkmode })}
-              key={index}
-            ></div>
-          ))}
-        </div>
+      {currSts >= 0 && (
         <div
-          className={cx(styles.statusContainer, {
-            [styles.brightColor]: !darkmode,
-          })}
-          id="statusContainer"
+          className={cx(styles.root, { [styles.bright]: !darkmode })}
+          id="container"
         >
-          {/* {statusArr.map((sts, index) => ( */}
-          <>
-            {statusArr[currSts]?.item ? (
-              <img
-                key={statusArr[currSts].item}
-                id="image"
-                src={statusArr[currSts].item}
-                className={cx(styles.statusItem, {
-                  [styles.profileImg]:
-                    statusArr[currSts].imageType === "profile",
-                })}
-              />
-            ) : (
-              <></>
-            )}
-            {statusArr[currSts].otherDetails || <span></span>}
-          </>
-          {/* ))} */}
+          <Switch />
+          <div className={styles.counts} id="counters">
+            {statusArr.map((sts, index) => (
+              <div
+                className={cx(styles.status, { [styles.dark]: !darkmode })}
+                key={index}
+              ></div>
+            ))}
+          </div>
+          <div
+            className={cx(styles.statusContainer, {
+              [styles.brightColor]: !darkmode,
+            })}
+            id="statusContainer"
+          >
+            {/* {statusArr.map((sts, index) => ( */}
+            <>
+              {statusArr[currSts]?.item ? (
+                <img
+                  key={statusArr[currSts].item}
+                  id="image"
+                  src={statusArr[currSts].item}
+                  className={cx(styles.statusItem, {
+                    [styles.profileImg]:
+                      statusArr[currSts].imageType === "profile",
+                  })}
+                />
+              ) : (
+                <></>
+              )}
+              {statusArr[currSts].otherDetails || <span></span>}
+            </>
+            {/* ))} */}
+          </div>
           {!seen &&
           typeof window !== "undefined" &&
-          !localStorage.getItem("seen") ? (
-            <Slider type="notif" onclick={() => setSeen(!seen)} />
+          ((!seen && !localStorage.getItem("seen")) ||
+            (!localStorage.getItem("version") &&
+              localStorage.getItem("version") !== Config.version)) ? (
+            <Slider type="notif" onclick={() => setVersion()} />
           ) : (
             <></>
           )}
         </div>
-      </div>}
+      )}
     </modeCtx.Provider>
   );
 }
