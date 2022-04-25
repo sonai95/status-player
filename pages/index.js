@@ -143,9 +143,9 @@ function Status() {
     // },
   ]);
   const [currSts, setStsCnt] = useState(0);
-  const [x, setX] = useState(false);
   const [timerId, setTimer] = useState(null);
   function checkLoadedFunc() {
+    console.log("xXXXXXXXXx")
     var image = document.getElementById("statusContainer").children[0];
     var isLoaded = image.complete && image.naturalHeight !== 0;
     if (!statusArr[currSts].item || isLoaded) {
@@ -154,6 +154,9 @@ function Status() {
           setStsCnt(currSts < statusArr.length - 1 ? currSts + 1 : currSts);
         }, statusArr[currSts].delay)
       );
+      if(currSts===0) {
+        zeroHandle();
+      }
     } else {
       setTimeout(() => {
         checkLoadedFunc();
@@ -163,8 +166,9 @@ function Status() {
   const [seen, setSeen] = useState(false);
 
   useEffect(() => {
-    if (currSts < statusArr.length && (seen || localStorage.getItem("seen"))) {
-      if(!localStorage.getItem('seen')) localStorage.setItem('seen', seen);
+    console.log("AAAAAAAAAAAAAAAA", currSts)
+    if (currSts >=0 && currSts < statusArr.length && (seen || localStorage.getItem("seen"))) {
+      if (!localStorage.getItem("seen")) localStorage.setItem("seen", seen);
       const tmp1 = document.getElementsByClassName("status_status__D1DlT")[
         currSts
       ];
@@ -187,7 +191,40 @@ function Status() {
       }
     }
   }, [currSts, seen]);
-  const someFunct = () => {
+  function zeroHandle () {
+    if (currSts >=0 && currSts < statusArr.length && (seen || localStorage.getItem("seen"))) {
+      if (!localStorage.getItem("seen")) localStorage.setItem("seen", seen);
+      const tmp1 = document.getElementsByClassName("status_status__D1DlT")[
+        currSts
+      ];
+      const para = document.createElement("div");
+      if(!tmp1.children[0]) {
+        tmp1.appendChild(para);
+      }
+    }
+  }
+  const someFunct = (e) => {
+    console.log(e)
+    if ((e.code === "ArrowLeft" || (e?.touches && e?.touches[0]?.clientX < 100)) && currSts > 0) {
+      for (let i = currSts - 1; i <= currSts; i++) {
+        const x = document.getElementsByClassName("status_status__D1DlT")[i];
+        if (x.firstElementChild) x.removeChild(x.firstElementChild);
+        const stsArr = [...statusArr];
+        stsArr[i].delay = 2000;
+        setStsArr(stsArr);
+      }
+      if (timerId) {
+        clearTimeout(timerId);
+        setTimer(undefined);
+      }
+      setStsCnt((currSts) => {
+        if(currSts > 0) return currSts - 1;
+        else {
+          return 0;
+        }
+      });
+      return;
+    }
     if (timerId) {
       const pauseTime = new Date() - start;
       let restTime = statusArr[currSts].delay - pauseTime;
@@ -198,11 +235,11 @@ function Status() {
       setTimer(undefined);
       document.getElementById("counters").children[
         currSts
-      ].children[0].style.animationPlayState = "paused";
+      ]?.children[0]?.style?.animationPlayState = "paused";
     } else {
       document.getElementById("counters").children[
         currSts
-      ].children[0].style.animationPlayState = "running";
+      ]?.children[0]?.style?.animationPlayState = "running";
       checkLoadedFunc();
     }
   };
@@ -225,7 +262,7 @@ function Status() {
 
   return (
     <modeCtx.Provider value={{ darkmode, setMode }}>
-      <div
+      {currSts>=0 && <div
         className={cx(styles.root, { [styles.bright]: !darkmode })}
         id="container"
       >
@@ -262,9 +299,15 @@ function Status() {
             {statusArr[currSts].otherDetails || <span></span>}
           </>
           {/* ))} */}
-          {!seen && (typeof window !== 'undefined' && !localStorage.getItem('seen')) ? <Slider type="notif" onclick={() => setSeen(!seen)} /> : <></> }
+          {!seen &&
+          typeof window !== "undefined" &&
+          !localStorage.getItem("seen") ? (
+            <Slider type="notif" onclick={() => setSeen(!seen)} />
+          ) : (
+            <></>
+          )}
         </div>
-      </div>
+      </div>}
     </modeCtx.Provider>
   );
 }
